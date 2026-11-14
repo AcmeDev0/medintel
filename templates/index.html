@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedIntel AI — Regulatory Intelligence</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="/">
+                <i class="bi bi-shield-check me-2"></i>MedIntel AI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/chat">Intel Chat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/checklists">Checklists</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/classify">Classification Helper</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section text-center text-white py-5 mb-5 bg-dark" style="background: linear-gradient(135deg, #1e293b, #0f172a);">
+        <div class="container py-5">
+            <span class="badge bg-primary px-3 py-2 mb-3 rounded-pill">Regulatory Intelligence for Africa</span>
+            <h1 class="display-4 fw-bold mb-4">Navigate NAFDAC.<br>Ship Compliant. Go to Market Faster.</h1>
+            <p class="lead mb-5 mx-auto text-light" style="max-width: 700px;">
+                The only AI-powered platform purpose-built for Nigerian and African medical device & pharmaceutical compliance.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/chat" class="btn btn-primary btn-lg px-4 py-3 rounded-pill fw-bold">
+                    <i class="bi bi-chat-dots me-2"></i> Ask Regulatory Question
+                </a>
+                <a href="/checklists" class="btn btn-outline-light btn-lg px-4 py-3 rounded-pill fw-bold">
+                    View Compliance Checklists
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div class="container mb-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm feature-card p-3">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-primary bg-opacity-10 text-primary mb-3 mx-auto rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
+                            <i class="bi bi-robot"></i>
+                        </div>
+                        <h4 class="card-title fw-bold">Intel Chat</h4>
+                        <p class="card-text text-muted">RAG-powered Q&A grounded in official NAFDAC, FDA, and WHO regulations. Every answer includes verifiable source citations.</p>
+                        <a href="/chat" class="btn btn-sm btn-outline-primary mt-2">Try Intel Chat <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm feature-card p-3">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-success bg-opacity-10 text-success mb-3 mx-auto rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
+                            <i class="bi bi-list-check"></i>
+                        </div>
+                        <h4 class="card-title fw-bold">Compliance Checklists</h4>
+                        <p class="card-text text-muted">Step-by-step registration workflows for drugs, medical devices, and IVDs. Know exactly what documents you need before submission.</p>
+                        <a href="/checklists" class="btn btn-sm btn-outline-success mt-2">View Checklists <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm feature-card p-3">
+                    <div class="card-body text-center">
+                        <div class="feature-icon bg-warning bg-opacity-10 text-warning mb-3 mx-auto rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
+                            <i class="bi bi-search"></i>
+                        </div>
+                        <h4 class="card-title fw-bold">Device Classification</h4>
+                        <p class="card-text text-muted">Unsure if your product is Class A, B, C, or D? Describe your device and let our AI helper suggest the correct risk class and pathway.</p>
+                        <a href="/classify" class="btn btn-sm btn-outline-warning mt-2">Classify Device <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-auto">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2026 MedIntel AI - FAMO Technologies. For informational purposes only.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

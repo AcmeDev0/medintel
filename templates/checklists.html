@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compliance Checklists — MedIntel AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="/">
+                <i class="bi bi-shield-check me-2"></i>MedIntel AI
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/chat">Intel Chat</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/checklists">Checklists</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/classify">Classification Helper</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="bg-white border-bottom py-5 mb-4">
+        <div class="container text-center">
+            <h2 class="fw-bold">Regulatory Compliance Checklists</h2>
+            <p class="text-muted lead">Step-by-step workflows for NAFDAC and WHO registration processes.</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container pb-5">
+        <div class="row">
+            <!-- Checklist Directory -->
+            <div class="col-md-4 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom p-3">
+                        <h5 class="mb-0 fw-bold">Available Workflows</h5>
+                    </div>
+                    <div class="list-group list-group-flush" id="checklist-nav">
+                        <!-- Populated by JS -->
+                        <div class="text-center p-4">
+                            <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+                            <span class="ms-2 text-muted small">Loading checklists...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Checklist Detail Viewer -->
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm" id="checklist-viewer">
+                    <div class="card-body p-5 text-center text-muted">
+                        <i class="bi bi-card-checklist display-1 opacity-25 mb-3 d-block"></i>
+                        <h4>Select a workflow to begin</h4>
+                        <p>Choose from the available regulatory checklists on the left.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+    <script>
+        // Load checklists on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch('/api/checklists');
+                const data = await res.json();
+                
+                const nav = document.getElementById('checklist-nav');
+                nav.innerHTML = ''; // Clear loading
+                
+                data.checklists.forEach(cl => {
+                    const btn = document.createElement('button');
+                    btn.className = 'list-group-item list-group-item-action p-3';
+                    btn.innerHTML = `
+                        <div class="d-flex w-100 justify-content-between align-items-center mb-1">
+                            <h6 class="mb-0 fw-bold"><span class="me-2">${cl.icon}</span>${cl.title}</h6>
+                            <small class="badge bg-light text-dark">${cl.jurisdiction}</small>
+                        </div>
+                        <small class="text-muted d-block text-truncate">${cl.subtitle}</small>
+                    `;
+                    btn.onclick = () => loadChecklistDetail(cl.id, btn);
+                    nav.appendChild(btn);
+                });
+                
+                // Auto-load first checklist if exists
+                if(data.checklists.length > 0) {
+                    nav.firstChild.click();
+                }
+            } catch (err) {
+                console.error("Failed to load checklists", err);
+            }
+        });
+
+        async function loadChecklistDetail(id, btnElement) {
+            // Update active state
+            document.querySelectorAll('#checklist-nav .list-group-item').forEach(el => el.classList.remove('active'));
+            btnElement.classList.add('active');
+            
+            const viewer = document.getElementById('checklist-viewer');
+            viewer.innerHTML = '<div class="card-body p-5 text-center"><div class="spinner-border text-primary" role="status"></div></div>';
+            
+            try {
+                const res = await fetch(`/api/checklists/${id}`);
+                const data = await res.json();
+                
+                let stepsHtml = '';
+                data.steps.forEach(step => {
+                    stepsHtml += `
+                        <div class="timeline-step mb-4 position-relative ps-4 border-start border-primary border-3">
+                            <h5 class="fw-bold text-primary">Step ${step.step}: ${step.title}</h5>
+                            <p class="text-muted">${step.description}</p>
+                            
+                            <div class="bg-light p-3 rounded mb-3">
+                                <h6 class="fw-bold fs-6 mb-2">Required Actions:</h6>
+                                <ul class="mb-0 small">
+                                    ${step.tasks.map(t => `<li>${t}</li>`).join('')}
+                                </ul>
+                            </div>
+                            
+                            <div class="d-flex gap-2 align-items-start mb-2">
+                                <i class="bi bi-file-earmark-pdf text-danger"></i>
+                                <div class="small">
+                                    <strong>Required Documents:</strong><br>
+                                    ${step.documents.join(', ')}
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-warning py-2 px-3 mt-3 d-flex align-items-center mb-0">
+                                <i class="bi bi-lightbulb-fill text-warning me-2 fs-5"></i>
+                                <small>${step.tips}</small>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                viewer.innerHTML = `
+                    <div class="card-header bg-white border-bottom p-4">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <span class="badge bg-primary mb-2">${data.category}</span>
+                                <h3 class="fw-bold mb-1">${data.title}</h3>
+                                <p class="text-muted mb-0">${data.subtitle}</p>
+                            </div>
+                            <span class="fs-1">${data.icon}</span>
+                        </div>
+                        <div class="d-flex gap-3 mt-3 pt-3 border-top small text-muted">
+                            <div><i class="bi bi-clock me-1"></i> Time: ${data.estimated_time}</div>
+                            <div><i class="bi bi-cash me-1"></i> Cost: ${data.estimated_cost}</div>
+                            <div><i class="bi bi-geo-alt me-1"></i> ${data.jurisdiction}</div>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        ${stepsHtml}
+                        
+                        <div class="mt-5 border-top pt-4">
+                            <h6 class="fw-bold">References / Regulatory Basis:</h6>
+                            <ul class="text-muted small">
+                                ${data.references.map(r => `<li>${r}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                viewer.innerHTML = '<div class="card-body p-5 text-center text-danger">Failed to load checklist details.</div>';
+            }
+        }
+    </script>
+</body>
+</html>

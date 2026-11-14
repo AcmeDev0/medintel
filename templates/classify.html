@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Classification — MedIntel AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="/">
+                <i class="bi bi-shield-check me-2"></i>MedIntel AI
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/chat">Intel Chat</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/checklists">Checklists</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/classify">Classification Helper</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold">AI Device Classification Helper</h2>
+                    <p class="text-muted">Describe your medical device to receive an AI-suggested NAFDAC risk classification (Class A-D) and regulatory pathway.</p>
+                </div>
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <form id="classify-form">
+                            <div class="mb-3">
+                                <label for="device-description" class="form-label fw-bold">Device Description</label>
+                                <textarea class="form-control" id="device-description" rows="4" placeholder="Describe the device, its intended purpose, how it interacts with the body (invasive/non-invasive), and duration of use..." required></textarea>
+                                <div class="form-text">Example: "A software application that analyzes MRI scans using AI to highlight potential tumors for radiologists."</div>
+                            </div>
+                            <button type="submit" class="btn btn-warning w-100 fw-bold py-2" id="classify-btn">
+                                <i class="bi bi-magic me-2"></i> Analyze & Classify
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Result Area -->
+                <div id="classification-result" class="card border-0 shadow-sm d-none">
+                    <div class="card-header bg-white border-bottom p-4">
+                        <h5 class="mb-0 fw-bold">Classification Assessment</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="result-content" class="markdown-content"></div>
+                        
+                        <div class="alert alert-info mt-4 mb-0 d-flex">
+                            <i class="bi bi-info-circle-fill me-3 fs-4"></i>
+                            <div>
+                                <small><strong>Disclaimer:</strong> This is an AI-suggested classification based on NAFDAC 2025 guidelines. Final classification authority rests with NAFDAC. Always verify through a formal classification request.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('classify-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const descInput = document.getElementById('device-description');
+            const btn = document.getElementById('classify-btn');
+            const resultDiv = document.getElementById('classification-result');
+            const resultContent = document.getElementById('result-content');
+            
+            const description = descInput.value.trim();
+            if (!description) return;
+
+            // Loading state
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Analyzing...';
+            resultDiv.classList.add('d-none');
+            
+            try {
+                const response = await fetch('/api/classify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ description })
+                });
+                
+                if (!response.ok) throw new Error('API request failed');
+                
+                const data = await response.json();
+                
+                // Show result
+                resultContent.innerHTML = marked.parse(data.classification);
+                resultDiv.classList.remove('d-none');
+                
+            } catch (error) {
+                alert('Error classifying device: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-magic me-2"></i> Analyze & Classify';
+            }
+        });
+    </script>
+</body>
+</html>
