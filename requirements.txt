@@ -1,0 +1,14 @@
+fastapi>=0.115.9
+uvicorn[standard]
+jinja2
+python-multipart
+google-genai
+chromadb
+langchain
+langchain-google-genai
+langchain-chroma
+langchain-text-splitters
+pypdf
+pydantic
+aiofiles
+python-dotenv

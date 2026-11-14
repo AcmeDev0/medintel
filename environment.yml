@@ -1,0 +1,22 @@
+name: medintel
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - fastapi
+  - uvicorn
+  - jinja2
+  - python-multipart
+  - pydantic
+  - aiofiles
+  - python-dotenv
+  - pypdf
+  - chromadb
+  - langchain
+  - pip
+  - pip:
+      - google-genai
+      - langchain-google-genai
+      - langchain-chroma
+      - langchain-text-splitters
